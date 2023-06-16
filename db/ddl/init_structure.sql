@@ -1,10 +1,3 @@
-CREATE TABLE IF NOT EXISTS reader (
-    id_reader SERIAL PRIMARY KEY,
-    full_name VARCHAR(100),
-    address VARCHAR(200),
-    phone VARCHAR(20)
-);
-
 CREATE TABLE IF NOT EXISTS author(
     id_author SERIAL PRIMARY KEY,
     full_name VARCHAR(100)
@@ -15,10 +8,34 @@ CREATE TABLE IF NOT EXISTS genre(
     genre_name VARCHAR(30)
 );
 
+CREATE TABLE IF NOT EXISTS city(
+    id_city SERIAL PRIMARY KEY,
+    city VARCHAR(50)
+);
+
 CREATE TABLE IF NOT EXISTS publisher(
     id_publisher SERIAL PRIMARY KEY,
     name VARCHAR(30),
-    city VARCHAR(30)
+    id_city INTEGER,
+    FOREIGN KEY (id_city) REFERENCES city (id_city) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS address(
+    id_address SERIAL PRIMARY KEY,
+    id_city INTEGER,
+    postcode VARCHAR(20),
+    street VARCHAR(100),
+    house_number VARCHAR(20),
+    apartment_number VARCHAR(20),
+    FOREIGN KEY (id_city) REFERENCES city (id_city) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS reader (
+    id_reader SERIAL PRIMARY KEY,
+    full_name VARCHAR(100),
+    id_address INTEGER,
+    phone VARCHAR(20),
+    FOREIGN KEY (id_address) REFERENCES address (id_address) ON DELETE  SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS operation_type(
