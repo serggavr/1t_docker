@@ -2,5 +2,5 @@
 
 Запуск: `docker-compose up`
 
-Схема БД: ![Схема БД "Библиотека""](./theLibrary.jpeg)
+Схема БД: ![Схема БД "Библиотека""](theLibrary.jpeg)
 
