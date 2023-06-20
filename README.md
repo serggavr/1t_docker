@@ -63,9 +63,12 @@ SELECT count(id_book) AS not_returned_books FROM (
 ```  
 6) Книги какого издательства были самыми востребованными у читателей? Отсортируйте издательства по убыванию востребованности книг:
 ```sql
-SELECT count(operation.id_book) AS rate, book.name, operation.id_book  FROM operation
-INNER JOIN book ON operation.id_book = book.id_book 
-WHERE id_type = 1 GROUP BY operation.id_book, book.name ORDER BY rate ASC
+SELECT count(operation.id_book) AS rate, p.name, book.id_publisher FROM operation
+INNER JOIN book ON operation.id_book = book.id_book
+INNER JOIN public.publisher p ON p.id_publisher = book.id_publisher 
+WHERE id_type = 1 
+GROUP BY   p.name, book.id_publisher
+ORDER BY rate DESC 
 ```  
 7) Определить самого издаваемого автора  
 ```sql
@@ -146,6 +149,12 @@ where o.id_reader = 1
 and id_type = 2
 ) stop_read
 on start_read.id_book = stop_read.id_book
+```
+10) ~~Рейтинг книг:~~
+```sql
+SELECT count(operation.id_book) AS rate, book.name, operation.id_book  FROM operation
+INNER JOIN book ON operation.id_book = book.id_book 
+WHERE id_type = 1 GROUP BY operation.id_book, book.name ORDER BY rate ASC
 ```
 
 Схема БД: ![Схема БД "Библиотека""](theLibrary.jpeg)
