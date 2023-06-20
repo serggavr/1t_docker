@@ -25,6 +25,20 @@ SELECT count(id_book) AS not_returned_books FROM (
 		WHERE id_type = 2
 	GROUP BY id_book, id_reader
 ) AS not_returned_books
+```  
+3) Определить читателей, у которых на руках определенная книга  
+```sql
+SELECT not_returned_books.id_book, not_returned_books.id_reader, reader.full_name, book.name FROM (
+	SELECT id_book, id_reader from operation
+		WHERE id_type = 1
+	EXCEPT 
+	SELECT id_book, id_reader FROM operation
+		WHERE id_type = 2
+	GROUP BY id_book, id_reader
+) AS not_returned_books
+INNER JOIN reader ON not_returned_books.id_reader = reader.id_reader
+INNER JOIN book  ON not_returned_books.id_book = book.id_book
+WHERE not_returned_books.id_book = 4
 ``` 
 
 Схема БД: ![Схема БД "Библиотека""](theLibrary.jpeg)
