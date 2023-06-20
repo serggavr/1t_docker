@@ -69,13 +69,83 @@ WHERE id_type = 1 GROUP BY operation.id_book, book.name ORDER BY rate ASC
 ```  
 7) Определить самого издаваемого автора  
 ```sql
-select rate, id_author, full_name from (
-	select count(authors.id_author) as rate, authors.id_author, author.full_name from authors
-	inner join author on author.id_author = authors.id_author
-	group by authors.id_author, author.full_name) ar
-where rate = (select max(rate) from (
-	select count(id_author) as rate, id_author from authors
-	group by id_author) ar2 )
+SELECT rate, id_author, full_name FROM (
+	SELECT count(authors.id_author) AS rate, authors.id_author, author.full_name FROM authors
+	INNER JOIN author ON author.id_author = authors.id_author
+	GROUP BY authors.id_author, author.full_name) ar
+WHERE rate = (SELECT max(rate) FROM (
+	SELECT count(id_author) AS rate, id_author FROM authors
+	GROUP BY id_author) ar2 )
+	
+	--Или можно с limit 1, учитывая что мы сортируем по возрастанию,
+	--самый издаваемый автор у нас будет на первой строке:
+	
+SELECT count(authors.id_author) AS rate, author.full_name, authors.id_author from authors
+INNER JOIN author ON authors.id_author = author.id_author
+GROUP BY authors.id_author, author.full_name
+ORDER BY rate DESC 
+LIMIT 1
+```
+8) Определить среднее количество прочитанных страниц читателем за день:  
+День, за который нужно посмотреть среднее кол-во прочитанных страниц записывается в  
+`where start_read.date <= '2023-02-15' and stop_read.date >= '2023-02-15'`
+вол-во страниц выводится в столбце `avr_page_per_day`  
+Пример: ![Схема БД "Библиотека""](2.3.8.png)  
+
+```sql
+select
+	start_read.date as start_read_day,
+	stop_read.date as stop_read_day,
+	start_read.id_reader, 
+	sum(start_read.pages_number),
+	sum((start_read.pages_number) / (case (stop_read.date - start_read.date)
+		when 0 then 1
+		else (stop_read.date - start_read.date)
+	end
+	)) as avr_page_per_day
+from
+(
+select o.id_book, o.id_reader, o.id_type, book.name, book.pages_number, date(o.date) from public.operation o 
+inner join book on book.id_book = o.id_book
+where o.id_reader = 1
+and id_type = 1
+) start_read
+inner join 
+(
+select o.id_book, o.id_reader, o.id_type, book.name, book.pages_number, date(o.date) from public.operation o
+inner join book on book.id_book = o.id_book
+where o.id_reader = 1
+and id_type = 2
+) stop_read
+on start_read.id_book = stop_read.id_book
+where start_read.date <= '2023-02-15' and stop_read.date >= '2023-02-15'
+group by stop_read.date, start_read.date, start_read.id_reader, start_read.pages_number
+```
+
+9) ~~Когда читатель взял и вернул книги и кол-во страниц в книгах~~  
+```sql
+select 
+	start_read.id_book, 
+	start_read.id_reader, 
+	start_read.name, 
+	start_read.pages_number, 
+	start_read.date as start_read,
+	stop_read.date as stop_read
+from
+(
+select o.id_book, o.id_reader, o.id_type, book.name, book.pages_number, date from public.operation o 
+inner join book on book.id_book = o.id_book
+where o.id_reader = 1
+and id_type = 1
+) start_read
+inner join 
+(
+select o.id_book, o.id_reader, o.id_type, book.name, book.pages_number, date from public.operation o
+inner join book on book.id_book = o.id_book
+where o.id_reader = 1
+and id_type = 2
+) stop_read
+on start_read.id_book = stop_read.id_book
 ```
 
 Схема БД: ![Схема БД "Библиотека""](theLibrary.jpeg)
