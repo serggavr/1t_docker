@@ -28,7 +28,7 @@ SELECT count(id_book) AS not_returned_books FROM (
 ```  
 3) Определить читателей, у которых на руках определенная книга  
 ```sql
-SELECT not_returned_books.id_book, not_returned_books.id_reader, reader.full_name, book.name FROM (
+SELECT  not_returned_books.id_reader, reader.full_name, not_returned_books.id_book, book.name FROM (
 	SELECT id_book, id_reader from operation
 		WHERE id_type = 1
 	EXCEPT 
@@ -40,6 +40,17 @@ INNER JOIN reader ON not_returned_books.id_reader = reader.id_reader
 INNER JOIN book  ON not_returned_books.id_book = book.id_book
 WHERE not_returned_books.id_book = 4
 ``` 
+4) Определите, какие книги на руках читателей.  
+```sql
+SELECT book.name FROM (
+	SELECT id_book, id_reader FROM public.operation
+	WHERE id_type = 1
+	EXCEPT 
+	SELECT id_book, id_reader FROM public.operation
+	WHERE id_type = 2
+) AS not_returned_books
+INNER JOIN book on not_returned_books.id_book = book.id_book
+```
 
 Схема БД: ![Схема БД "Библиотека""](theLibrary.jpeg)
 
