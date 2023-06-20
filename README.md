@@ -61,6 +61,12 @@ SELECT count(id_book) AS not_returned_books FROM (
 	WHERE id_type = 2
 ) AS not_returned_books
 ```  
+6) Книги какого издательства были самыми востребованными у читателей? Отсортируйте издательства по убыванию востребованности книг:
+```sql
+SELECT count(operation.id_book) AS rate, book.name, operation.id_book  FROM operation
+INNER JOIN book ON operation.id_book = book.id_book 
+WHERE id_type = 1 GROUP BY operation.id_book, book.name ORDER BY rate ASC
+```  
 
 
 Схема БД: ![Схема БД "Библиотека""](theLibrary.jpeg)
