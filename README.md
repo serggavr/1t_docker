@@ -67,7 +67,16 @@ SELECT count(operation.id_book) AS rate, book.name, operation.id_book  FROM oper
 INNER JOIN book ON operation.id_book = book.id_book 
 WHERE id_type = 1 GROUP BY operation.id_book, book.name ORDER BY rate ASC
 ```  
-
+7) Определить самого издаваемого автора  
+```sql
+select rate, id_author, full_name from (
+	select count(authors.id_author) as rate, authors.id_author, author.full_name from authors
+	inner join author on author.id_author = authors.id_author
+	group by authors.id_author, author.full_name) ar
+where rate = (select max(rate) from (
+	select count(id_author) as rate, id_author from authors
+	group by id_author) ar2 )
+```
 
 Схема БД: ![Схема БД "Библиотека""](theLibrary.jpeg)
 
