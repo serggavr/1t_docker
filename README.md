@@ -45,7 +45,7 @@ where id_book in (
 select * from public.book
 where book.is_available = true
 ```  
--Определить сумму потерянных книг по каждому кварталу в течение года:
+- Определить сумму потерянных книг по каждому кварталу в течение года:
 ```sql
 --Сумма потерь в течении текущего года, and extract(year from date) = extract(year from now()),
 --еслу убрать строку, будут выведены данные за все время, вместо extract(year from now()) можно
