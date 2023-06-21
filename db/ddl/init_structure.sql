@@ -57,6 +57,7 @@ CREATE TABLE IF NOT EXISTS book (
     publishing_year DATE,
     pages_number INTEGER,
     price FLOAT(2),
+    is_available BOOLEAN DEFAULT True,
     FOREIGN KEY (id_publisher) REFERENCES publisher (id_publisher) ON DELETE SET NULL,
     FOREIGN KEY (id_storage) REFERENCES storage (id_storage) ON DELETE SET NULL
 );
@@ -166,7 +167,8 @@ VALUES (1, 1, 101000, 'Ленина', '5', '45'),
 
 INSERT INTO operation_type (id_type, type_name)
 VALUES (1, 'Выдача'),
-       (2, 'Возврат');
+       (2, 'Возврат'),
+       (3, 'Утрачена');
 
 INSERT INTO reader (id_reader, full_name, id_address, phone)
 VALUES (1, 'Иванов И.И', 1, '89998887788'),
@@ -184,11 +186,11 @@ VALUES (1, 'Иванов И.И', 1, '89998887788'),
 
 INSERT INTO operation ( id_book, id_reader, id_type, date)
 VALUES (1, 1, 1, '2023-02-12'),
-       (1, 1, 2, '2023-02-15'),
+       (1, 1, 2, '2023-02-17'),
        (2, 2, 1, '2023-02-13'),
        (2, 2, 2, '2023-02-16'),
        (3, 3, 1, '2023-03-14'),
-       (3, 3, 2, '2023-03-14'),
+       (3, 3, 2, '2023-03-19'),
        (4, 4, 1, '2023-04-15'),
        (4, 4, 2, '2023-04-16'),
        (5, 5, 1, '2023-05-12'),
@@ -201,6 +203,10 @@ VALUES (1, 1, 1, '2023-02-12'),
        (8, 1, 2, '2023-06-11'),
        (9, 10, 1, '2023-06-12'),
        (9, 10, 2, '2023-06-12'),
+       (8, 1, 1, '2023-06-11'),
+       (8, 1, 3, '2023-06-12'),
+       (9, 2, 1, '2023-06-12'),
+       (9, 2, 3, '2023-06-15'),
        (1, 11, 1, '2023-06-12'),
        (1, 11, 2, '2023-06-13'),
        (2, 1, 1, '2023-06-14'),
