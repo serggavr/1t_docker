@@ -37,9 +37,8 @@ AND id_type = 3
 --обновляем `is_available` на `false` у книг, которые были утеряны:
 update book set is_available = false
 where id_book in (
-		select book.id_book from book
-		inner join operation on operation.id_book = book.id_book
-		where operation.id_type = 3
+		select id_book from operation
+		where id_type = 3
 		);
 --выбираем только доступные книги
 select * from public.book
